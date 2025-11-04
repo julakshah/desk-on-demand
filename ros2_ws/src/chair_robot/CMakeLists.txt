@@ -27,6 +27,7 @@ install(PROGRAMS
   scripts/pub_test.py
   scripts/sub_test.py
   scripts/pose_from_aruco.py
+  scripts/movement.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

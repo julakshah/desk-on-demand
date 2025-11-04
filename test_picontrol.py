@@ -1,10 +1,12 @@
-from gpiozero import Motor
+from gpiozero import PWMLED
 from time import sleep
 
-motor = Motor(forward=4, backward=14)
+motorl = PWMLED(13)
+motorr = PWMLED(12)
 
 while True:
-    motor.forward()
+    motorl.value = .75
+    motorr.value = .3
     sleep(5)
-    motor.backward()
-    sleep(5)
+    motorl.value = 0
+    motorr.value = 0
