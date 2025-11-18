@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 ROS2 Node to add teleop control to an autonomous robot
 """
@@ -47,6 +48,7 @@ class TeleopController(Node):
 
         # Perform logic based on key identifier
         if key == ' ':
+            print("Swapping to manual control")
             msg = Int32()
             msg.data = True
             self.teleop_pub.publish(msg)
@@ -54,7 +56,7 @@ class TeleopController(Node):
             self.drive()
 
         if key == '\n' or key == '\r':
-            print("enter")
+            print("Swapping to automatic control")
             msg = Int32()
             msg.data = -1
             self.teleop_pub.publish(msg)
@@ -70,13 +72,17 @@ class TeleopController(Node):
         # Otherwise, would interfere with autonomous control
         if self.is_publishing:
             if key == 'w':
-                self.drive(linear=0.2)
+                print("Moving forward")
+                self.drive(linear=0.4)
             if key == 'a':
-                self.drive(angular=0.5)
+                print("Turning left")
+                self.drive(angular=0.4)
             if key == 's':
-                self.drive(linear=-0.2)
+                print("Moving backward")
+                self.drive(linear=-0.4)
             if key == 'd':
-                self.drive(angular=-0.5)
+                print("Turning right")
+                self.drive(angular=-0.4)
 
         # Stop program when Ctrl C pressed
         if key == '\x03':
@@ -117,6 +123,12 @@ class TeleopController(Node):
         key = sys.stdin.read(1)
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
         return key
+    
+    def __del__(self):
+        # Shutdown by publishing a message to init control (stopping robots)
+        msg_int = Int32()
+        msg_int.data = 999
+        self.teleop_pub.publish(msg_int)
 
 def main():
     rclpy.init()
